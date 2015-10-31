@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_trips"
+        android:id="@+id/serif"
+        android:typeface="serif"
+        android:textSize="25sp"
+        />
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_name"
+
+        />
+    <EditText
+        android:id="@+id/destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_destination"
+
+        />
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_date"
+        android:cursorVisible="false"
+        android:selectAllOnFocus="true"
+        android:focusableInTouchMode="false"
+        />
+
+    <EditText
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_time"
+        android:inputType="text"
+        android:cursorVisible="false"
+        android:selectAllOnFocus="true"
+        android:focusableInTouchMode="false"
+        />
+
+    <EditText
+        android:id="@+id/friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_friends"
+
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+    <Button
+        android:text="@string/create_trip"
+        android:id="@+id/button_createTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:text="@string/cancel_trip"
+        android:id="@+id/button_cancelTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+<!-- From: file:/Users/wangxinli/class/Android/ETA_CS9033_WangXinli/app/src/main/res/layout/activity_createtrip.xml -->
