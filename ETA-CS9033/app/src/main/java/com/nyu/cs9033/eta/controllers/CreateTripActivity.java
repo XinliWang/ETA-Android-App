@@ -31,7 +31,10 @@ public class CreateTripActivity extends Activity{
 	
 	private static final String TAG = "CreateTripActivity";
     private static final int CREATE_CODE = 1;
+    private static final int SEARCH_LOCATION = 2;
     private static final int PICK_CONTACT = 3;
+    private final Uri URI_HW3API = Uri.parse("location://com.example.nyu.hw3api");
+    private Button searchButton;
     private Button addContactButton;
 	private Button createTripButton;
 	private Button cancelTripButton;
@@ -40,10 +43,10 @@ public class CreateTripActivity extends Activity{
     private EditText trip_date;
     private EditText trip_time;
     private TextView trip_friends;
+    private TextView location;
     private Calendar calendar;
     private Trip newTrip;
     private ListView myListView;
-    private ArrayList<String> contacts = new ArrayList<>();
 
 
 
@@ -112,6 +115,23 @@ public class CreateTripActivity extends Activity{
             }
         });
 
+        //initialize some view
+        trip_friends = (TextView) findViewById(R.id.friends);
+        trip_destination = (EditText) findViewById(R.id.destination);
+        location = (TextView) findViewById(R.id.location);
+
+        //search location
+        searchButton = (Button) findViewById(R.id.buttonSearch);
+        searchButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+
+                searchLocation(view);
+               // startActivityForResult(intent,SEARCH_LOCATION);
+            }
+        });
+
+
         //create trip
         createTripButton = (Button)findViewById(R.id.button_createTrip);
         createTripButton.setOnClickListener(new View.OnClickListener(){
@@ -145,12 +165,9 @@ public class CreateTripActivity extends Activity{
 	
 		// TODO - fill in here
 		trip_name =(EditText)findViewById(R.id.name);
-        trip_destination = (EditText)findViewById(R.id.destination);
-        trip_friends = (TextView)findViewById(R.id.friends);
         String temp_name = trip_name.getText().toString().trim();
-        String temp_destination = trip_destination.getText().toString().trim();
+        String temp_destination = location.getText().toString().trim();
         String temp_friends = trip_friends.getText().toString().trim();
-
 
         String temp_time = trip_time.getText().toString().trim();
         String temp_date = trip_date.getText().toString().trim();
@@ -222,17 +239,24 @@ public class CreateTripActivity extends Activity{
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
 
-            if (intent!=null && requestCode == PICK_CONTACT)
-            {
-                getContactInfo(intent);
-                // Your class variables now have the data, so do something with it.
+            if (intent!=null){
+                switch (requestCode){
+                    case PICK_CONTACT:
+                        getContactInfo(intent);
+                        break;
+
+                    case SEARCH_LOCATION:
+                        getLocationInfo(intent);
+                        break;
+                }
             }
+
 
     }//onActivityResult
 
     protected void getContactInfo(Intent intent)
     {
-        trip_friends = (TextView) findViewById(R.id.friends);
+
         ContentResolver contact_resolver = getContentResolver();
         Uri contactData = intent.getData();
         Cursor cursor = contact_resolver.query(contactData, null, null, null, null);
@@ -240,35 +264,38 @@ public class CreateTripActivity extends Activity{
         if (cursor.moveToFirst())
         {
             String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-//            String name = "";
-            //String phone = "";
-//            Cursor phoneCur = contact_resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-//                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{contactId}, null);
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//            if (phoneCur.moveToFirst()) {
-//                name = phoneCur.getString(phoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//                phone = phoneCur.getString(phoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//            }
             Log.e("name :***: ", name);
-
-            if(contacts.isEmpty()){
-                trip_friends.append(name);
-            }else{
-                trip_friends.append("," + name);
-            }
-            contacts.add(name);
-
+            String contracts = trip_friends.getText().toString();
+            trip_friends.setText(contracts.length() == 0? name : contracts + "," + name);
             contactId = null;
             name = null;
-           // phone = null;
-           // phoneCur = null;
         }
         contact_resolver = null;
         cursor.close();
 
     }//getContactInfo
 
+    protected void searchLocation(View view){
+        Intent intent = new Intent(Intent.ACTION_VIEW, URI_HW3API);
 
+        String location = trip_destination.getText().toString();
+        if(location!=null && location.length()>0){
+            intent.putExtra("searchVal",location);
+            startActivityForResult(intent, SEARCH_LOCATION);
+        }
+
+    }
+
+    protected void getLocationInfo(Intent intent){
+        //get the result
+        ArrayList<String> list = intent.getExtras().getStringArrayList("retVal");
+        if(!list.isEmpty()){
+            String locationInfo = list.get(0) + " : " + list.get(1);
+            Log.e("location:",locationInfo);
+            location.setText(locationInfo);
+        }
+    }
 
 
 

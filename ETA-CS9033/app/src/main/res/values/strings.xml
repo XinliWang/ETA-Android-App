@@ -11,8 +11,11 @@
     <string name="trip_date">Date</string>
     <string name="trip_time">Time</string>
     <string name="trip_friends">Friends</string>
+    <string name="location_form">location::location_type</string>
+
 
     <string name="button_contact">Add</string>
+    <string name="button_search">Search</string>
 
     <string name="create_trip">Create</string>
     <string name="cancel_trip">Cancel</string>
