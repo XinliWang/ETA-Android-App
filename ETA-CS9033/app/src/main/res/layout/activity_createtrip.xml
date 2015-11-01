@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_trips"
+        android:id="@+id/serif"
+        android:typeface="serif"
+        android:textSize="25sp"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/textName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/trip_name"
+        android:textSize="20sp"
+        android:layout_below="@+id/serif"
+        android:layout_alignParentLeft="true"
+        />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textName"
+        />
+    <TextView
+        android:id="@+id/textDes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/trip_destination"
+        android:layout_below="@+id/name"
+        android:textSize="20sp"
+        android:layout_alignParentLeft="true"
+        />
+    <EditText
+        android:id="@+id/destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textDes"
+        />
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_date"
+        android:cursorVisible="false"
+        android:selectAllOnFocus="true"
+        android:focusableInTouchMode="false"
+        android:textSize="20sp"
+        android:layout_below="@+id/destination"
+        />
+
+    <EditText
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_time"
+        android:inputType="text"
+        android:cursorVisible="false"
+        android:selectAllOnFocus="true"
+        android:focusableInTouchMode="false"
+        android:layout_below="@+id/date"
+        />
+
+
+
+        <TextView
+            android:id="@+id/contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trip_friends"
+            android:textSize="20sp"
+            android:layout_below="@+id/time"
+            />
+
+
+    <TextView
+        android:id="@+id/friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_below="@+id/contact"
+        android:layout_alignParentLeft="true"
+        />
+    <Button
+        android:id="@+id/buttonContact"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/button_contact"
+        android:layout_below="@+id/friends"
+
+        />
+
+
+    <Button
+        android:text="@string/cancel_trip"
+        android:id="@+id/button_cancelTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonContact"
+        android:layout_alignParentRight="true"
+        />
+    <Button
+        android:text="@string/create_trip"
+        android:id="@+id/button_createTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/button_cancelTrip"
+        android:layout_alignTop="@+id/button_cancelTrip"
+        />
+
+
+
+
+
+</RelativeLayout>
