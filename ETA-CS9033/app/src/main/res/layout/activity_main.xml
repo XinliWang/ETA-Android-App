@@ -25,16 +25,16 @@
         android:text="@string/create_trips"
         android:id="@+id/main_createTrip"
         android:layout_marginBottom="41dp"
-        android:layout_above="@+id/main_viewTrip"
-        android:layout_alignLeft="@+id/main_viewTrip"
-        android:layout_alignStart="@+id/main_viewTrip"
+        android:layout_above="@+id/main_viewTripHistory"
+        android:layout_alignLeft="@+id/main_viewTripHistory"
+        android:layout_alignStart="@+id/main_viewTripHistory"
         />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/view_trip"
-        android:id="@+id/main_viewTrip"
+        android:text="@string/trip_history"
+        android:id="@+id/main_viewTripHistory"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         />

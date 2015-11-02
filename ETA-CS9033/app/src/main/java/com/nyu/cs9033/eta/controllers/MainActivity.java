@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.nyu.cs9033.eta.R;
 import com.nyu.cs9033.eta.models.Trip;
@@ -32,7 +31,7 @@ public class MainActivity extends Activity{
                 startCreateTripActivity();
             }
         });
-        viewButton = (Button)findViewById(R.id.main_viewTrip);
+        viewButton = (Button)findViewById(R.id.main_viewTripHistory);
         viewButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -64,8 +63,7 @@ public class MainActivity extends Activity{
 	public void startViewTripActivity() {
 		
 		// TODO - fill in here
-        Intent intent = new Intent(this,ViewTripActivity.class);
-        intent.putExtra("create_trip",trip);
+        Intent intent = new Intent(this,TripHistoryActivity.class);
         startActivity(intent);
 	}
 	
@@ -83,14 +81,14 @@ public class MainActivity extends Activity{
 	 * use, i.e. to view the trip.
 	 * 
 	 */
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO - fill in here
-        if(resultCode==CREATE_CODE){
-            trip = data.getParcelableExtra("create_trip");
-        }else if(resultCode==RESULT_CANCELED){
-            Toast.makeText(this, "Pause to create trip!", Toast.LENGTH_LONG).show();
-        }
-	}
+//	@Override
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		// TODO - fill in here
+//        if(resultCode==CREATE_CODE){
+//            trip = data.getParcelableExtra("create_trip");
+//        }else if(resultCode==RESULT_CANCELED){
+//            Toast.makeText(this, "Pause to create trip!", Toast.LENGTH_LONG).show();
+//        }
+//	}
 
 }

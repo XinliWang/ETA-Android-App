@@ -22,6 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.nyu.cs9033.eta.R;
+import com.nyu.cs9033.eta.db.TripDatabaseHelper;
 import com.nyu.cs9033.eta.models.Trip;
 
 import java.util.ArrayList;
@@ -182,7 +183,6 @@ public class CreateTripActivity extends Activity{
             newTrip.setDestination(temp_destination);
             newTrip.setTime(temp_time);
             newTrip.setFriends(temp_friends);
-            Toast.makeText(this, "Create trip successfully!", Toast.LENGTH_LONG).show();
             return newTrip;
         }
 
@@ -204,10 +204,10 @@ public class CreateTripActivity extends Activity{
 	
 		// TODO - fill in here
         if(trip!=null){
-            Intent intent = new Intent(CreateTripActivity.this,MainActivity.class);
-            intent.putExtra("create_trip",trip);
-            setResult(CREATE_CODE, intent);
+            TripDatabaseHelper helper = new TripDatabaseHelper(this);
+            helper.insertTrip(trip);
             finish();
+            Toast.makeText(this, "Create trip successfully!", Toast.LENGTH_LONG).show();
             return true;
         }else{
             return false;

@@ -34,7 +34,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_LOC_PROVIDER = "provider";
 
 
-    public TripDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public TripDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -114,5 +114,37 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         }
         return tripList;
     }
+
+    public List<String> getAllTripsName() {
+        List<String> tripNameList = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select name from " + TABLE_TRIP, null);
+
+        // loop through all query results
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            tripNameList.add(cursor.getString(0));
+        }
+        return tripNameList;
+    }
+
+    public Trip getTrip(String tripName) {
+        Trip trip = new Trip();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_TRIP + " where name = ?; ", new String[]{tripName});
+
+        // loop through all query results
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            trip.setId(cursor.getInt(0));
+            trip.setName(cursor.getString(1));
+            trip.setTime(cursor.getString(2));
+            trip.setDestination(cursor.getString(3));
+            trip.setFriends(cursor.getString(4));
+        }
+        return trip;
+    }
+
+
 
 }
