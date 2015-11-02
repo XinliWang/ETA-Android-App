@@ -52,15 +52,15 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(tripTable);
 
         // create location table
-        String locationTable = "create table " + TABLE_LOCATION + "("
-            + COLUMN_LOC_TRIPID + " integer references trip(_id), "
-            + COLUMN_LOC_TIMESTAMP + " integer, "
-            + COLUMN_LOC_LAT + " real, "
-            + COLUMN_LOC_LONG + " real, "
-            + COLUMN_LOC_ALT + " real, "
-            + COLUMN_LOC_PROVIDER + " varchar(100))";
-
-        db.execSQL(locationTable);
+//        String locationTable = "create table " + TABLE_LOCATION + "("
+//            + COLUMN_LOC_TRIPID + " integer references trip(_id), "
+//            + COLUMN_LOC_TIMESTAMP + " integer, "
+//            + COLUMN_LOC_LAT + " real, "
+//            + COLUMN_LOC_LONG + " real, "
+//            + COLUMN_LOC_ALT + " real, "
+//            + COLUMN_LOC_PROVIDER + " varchar(100))";
+//
+//        db.execSQL(locationTable);
 
     }
 

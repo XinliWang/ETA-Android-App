@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,12 +44,8 @@ public class CreateTripActivity extends Activity{
     private EditText trip_time;
     private TextView trip_friends;
     private TextView location;
-    private Calendar calendar;
+    private Calendar calendar = Calendar.getInstance();;
     private Trip newTrip;
-    private ListView myListView;
-
-
-
 
 
 	@Override
@@ -60,8 +55,32 @@ public class CreateTripActivity extends Activity{
 		// TODO - fill in here
         setContentView(R.layout.activity_createtrip);
 
+        //initialize some view
+        trip_friends = (TextView) findViewById(R.id.friends);
+        trip_destination = (EditText) findViewById(R.id.destination);
+        location = (TextView) findViewById(R.id.location);
+
         //fill in date
-        calendar = Calendar.getInstance();
+        initTripDate();
+
+        //fill in time
+        initTripTime();
+
+        //add friend from contact book
+        initContactBook();
+
+        //search location
+        initSearchLocation();
+
+        //create trip
+        initCreateTrip();
+
+        //cancel trip
+        initCancelTrip();
+
+	}
+
+    private void initTripDate(){
         trip_date = (EditText)findViewById(R.id.date);
         trip_date.setFocusable(false);
         trip_date.setClickable(true);
@@ -82,8 +101,9 @@ public class CreateTripActivity extends Activity{
 
             }
         });
+    }
 
-        //fill in time
+    private void initTripTime(){
         trip_time = (EditText) findViewById(R.id.time);
         trip_time.setFocusable(false);
         trip_time.setClickable(true);
@@ -103,8 +123,9 @@ public class CreateTripActivity extends Activity{
                         true).show();
             }
         });
+    }
 
-        //add friend from contact book
+    private void initContactBook(){
         addContactButton = (Button) findViewById(R.id.buttonContact);
         addContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,25 +136,21 @@ public class CreateTripActivity extends Activity{
 
             }
         });
+    }
 
-        //initialize some view
-        trip_friends = (TextView) findViewById(R.id.friends);
-        trip_destination = (EditText) findViewById(R.id.destination);
-        location = (TextView) findViewById(R.id.location);
-
-        //search location
+    private void initSearchLocation(){
         searchButton = (Button) findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
 
                 searchLocation(view);
-               // startActivityForResult(intent,SEARCH_LOCATION);
+                // startActivityForResult(intent,SEARCH_LOCATION);
             }
         });
+    }
 
-
-        //create trip
+    private void initCreateTrip(){
         createTripButton = (Button)findViewById(R.id.button_createTrip);
         createTripButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -142,8 +159,9 @@ public class CreateTripActivity extends Activity{
                 saveTrip(newTrip);
             }
         });
+    }
 
-        //cancel trip
+    private void initCancelTrip(){
         cancelTripButton = (Button)findViewById(R.id.button_cancelTrip);
         cancelTripButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -151,9 +169,7 @@ public class CreateTripActivity extends Activity{
                 cancelTrip();
             }
         });
-
-	}
-
+    }
 
 	/**
 	 * This method should be used to
@@ -235,7 +251,10 @@ public class CreateTripActivity extends Activity{
         finish();
 	}
 
-    //contact book
+    /**
+     * This method should receive the result from other activities
+     * and get the information from that.
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
 
@@ -254,6 +273,11 @@ public class CreateTripActivity extends Activity{
 
     }//onActivityResult
 
+    /**
+     * This method get the participators form contact book,
+     * if there is no participate,we add it.
+     * if there are some participators, we need use "," to combine these names
+     */
     protected void getContactInfo(Intent intent)
     {
 
@@ -276,17 +300,11 @@ public class CreateTripActivity extends Activity{
 
     }//getContactInfo
 
-    protected void searchLocation(View view){
-        Intent intent = new Intent(Intent.ACTION_VIEW, URI_HW3API);
 
-        String location = trip_destination.getText().toString();
-        if(location!=null && location.length()>0){
-            intent.putExtra("searchVal",location);
-            startActivityForResult(intent, SEARCH_LOCATION);
-        }
-
-    }
-
+    /**
+     * This method should sava and show the specific location's name and address
+     * which we have chosen
+     */
     protected void getLocationInfo(Intent intent){
         //get the result
         ArrayList<String> list = intent.getExtras().getStringArrayList("retVal");
@@ -297,6 +315,19 @@ public class CreateTripActivity extends Activity{
         }
     }
 
+    /**
+     * This method should send the data which form is “<location>::<location_type>”
+     * to the Foursquare API to get the location list
+     */
+    protected void searchLocation(View view){
+        Intent intent = new Intent(Intent.ACTION_VIEW, URI_HW3API);
 
+        String location = trip_destination.getText().toString();
+        if(location!=null && location.length()>0){
+            intent.putExtra("searchVal", location);
+            startActivityForResult(intent, SEARCH_LOCATION);
+        }
+
+    }
 
 }
