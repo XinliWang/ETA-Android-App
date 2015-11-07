@@ -27,20 +27,7 @@ public class TripHistoryActivity extends FragmentActivity implements ActionBar.T
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_triphistory);
         //initialization
-
-//        List<Fragment> listFragments = new ArrayList<Fragment>();
-//        listFragments.add(new PastTripFragment());
-//        listFragments.add(new CurTripFragment());
-//        listFragments.add(new UpcomTripFragment());
-//
-//        TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(),listFragments);
-
-
         initTabs();
-
-
-
-
     }
 
     private void initTabs(){
@@ -93,26 +80,5 @@ public class TripHistoryActivity extends FragmentActivity implements ActionBar.T
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
-
-//    private void viewPastTrip(){
-//        ListView listViewPast = (ListView) findViewById(R.id.pastTrips);
-//        //get the list of trips
-//        final List<String> adapterData =  helper.getPastTripsName();
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,adapterData);
-//
-//        //set into ListView
-//        listViewPast.setAdapter(adapter);
-//
-//        //set listener to manage the more detail
-//        listViewPast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String trip = adapterData.get(i);
-//                Intent intent = new Intent(TripHistoryActivity.this, ViewTripActivity.class);
-//                intent.putExtra("specificTrip", trip);
-//                startActivity(intent);
-//            }
-//        });
-//    }
 
 }

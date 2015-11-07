@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 
 import com.nyu.cs9033.eta.models.Trip;
 
@@ -75,6 +74,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //insert new trip into database
     public long insertTrip(Trip trip) {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_TRIP_NAME,trip.getName());
@@ -85,18 +85,19 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return getWritableDatabase().insert(TABLE_TRIP, null, cv);
     }
 
-    public long insertLocation(long tripId, Location location) {
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_LOC_TRIPID, tripId);
-        cv.put(COLUMN_LOC_TIMESTAMP, location.getTime());
-        cv.put(COLUMN_LOC_LAT, location.getLatitude());
-        cv.put(COLUMN_LOC_LONG, location.getLongitude());
-        cv.put(COLUMN_LOC_ALT, location.getAltitude());
-        cv.put(COLUMN_LOC_PROVIDER, location.getProvider());
-        // return id of new location
-        return getWritableDatabase().insert(TABLE_LOCATION, null, cv);
-    }
+//    public long insertLocation(long tripId, Location location) {
+//        ContentValues cv = new ContentValues();
+//        cv.put(COLUMN_LOC_TRIPID, tripId);
+//        cv.put(COLUMN_LOC_TIMESTAMP, location.getTime());
+//        cv.put(COLUMN_LOC_LAT, location.getLatitude());
+//        cv.put(COLUMN_LOC_LONG, location.getLongitude());
+//        cv.put(COLUMN_LOC_ALT, location.getAltitude());
+//        cv.put(COLUMN_LOC_PROVIDER, location.getProvider());
+//        // return id of new location
+//        return getWritableDatabase().insert(TABLE_LOCATION, null, cv);
+//    }
 
+    //get all trips list
     public List<Trip> getAllTrips() {
         List<Trip> tripList = new ArrayList<Trip>();
 
@@ -116,6 +117,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return tripList;
     }
 
+    //get all trips name list
     public List<String> getAllTripsName() {
         List<String> tripNameList = new ArrayList<String>();
 
@@ -129,6 +131,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return tripNameList;
     }
 
+    //get all past trips name list
     public List<String> getPastTripsName() {
         List<String> tripNameList = new ArrayList<String>();
 
@@ -143,6 +146,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return tripNameList;
     }
 
+    //get all upcoming trips name list
     public List<String> getUpcomingTripsName() {
         List<String> tripNameList = new ArrayList<String>();
 
@@ -159,6 +163,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return tripNameList;
     }
 
+    //get all current trips name list
     public List<String> getCurTripsName() {
         List<String> tripNameList = new ArrayList<String>();
 
@@ -176,6 +181,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    //get the specific trip's detail
     public Trip getTrip(String tripName) {
         Trip trip = new Trip();
 
@@ -193,6 +199,11 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return trip;
     }
 
+    /**
+     * We use Integer to save calendar into database,
+     * when we want to get from the database, we need convert
+     * the integer type to calendar type.
+     */
     private Calendar convertToCalendar(Long l){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(l);

@@ -32,22 +32,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
-//    List<Fragment> listFragments;
-//
-//    public TabsPagerAdapter(FragmentManager fm,List<Fragment> listFragments) {
-//        super(fm);
-//        this.listFragments = listFragments;
-//    }
-//
-//    @Override
-//    public Fragment getItem(int index) {
-//        return listFragments.get(index);
-//    }
-//
-//    @Override
-//    public int getCount() {
-//        // get item count - equal to number of tabs
-//        return listFragments.size();
-//    }
+
 
 }
