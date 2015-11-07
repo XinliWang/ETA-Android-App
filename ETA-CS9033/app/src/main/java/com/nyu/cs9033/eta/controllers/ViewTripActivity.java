@@ -11,6 +11,8 @@ import com.nyu.cs9033.eta.R;
 import com.nyu.cs9033.eta.db.TripDatabaseHelper;
 import com.nyu.cs9033.eta.models.Trip;
 
+import java.text.SimpleDateFormat;
+
 public class ViewTripActivity extends Activity {
 
 	private static final String TAG = "ViewTripActivity";
@@ -67,8 +69,11 @@ public class ViewTripActivity extends Activity {
             TextView text_friends = (TextView)findViewById(R.id.friends);
             text_name.setText(trip.getName());
             text_description.setText(trip.getDestination());
-            text_time.setText(trip.getTime());
-            text_friends.setText(trip.getFriends());
+
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+            text_time.setText(ft.format(trip.getTime().getTime()));
+            text_friends.setText(trip.convertListToString(trip.getFriends()));
         }else{
             new AlertDialog.Builder(this)
                     .setTitle("Alerting Message")

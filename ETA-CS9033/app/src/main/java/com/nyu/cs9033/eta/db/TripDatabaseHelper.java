@@ -10,6 +10,7 @@ import android.location.Location;
 import com.nyu.cs9033.eta.models.Trip;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -45,7 +46,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         String tripTable = "create table " + TABLE_TRIP + "("
             + COLUMN_TRIP_ID + " integer primary key autoincrement, "
             + COLUMN_TRIP_NAME + " text, "
-            + COLUMN_TRIP_TIME + " text, "
+            + COLUMN_TRIP_TIME + " integer, "
             + COLUMN_TRIP_DESTINATION + " text, "
             + COLUMN_TRIP_FRIENDS + " text)";
 
@@ -77,9 +78,9 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     public long insertTrip(Trip trip) {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_TRIP_NAME,trip.getName());
-        cv.put(COLUMN_TRIP_TIME, trip.getTime());
+        cv.put(COLUMN_TRIP_TIME, trip.getTime().getTimeInMillis());
         cv.put(COLUMN_TRIP_DESTINATION, trip.getDestination());
-        cv.put(COLUMN_TRIP_FRIENDS, trip.getFriends());
+        cv.put(COLUMN_TRIP_FRIENDS, trip.convertListToString(trip.getFriends()));
         // return id of new trip
         return getWritableDatabase().insert(TABLE_TRIP, null, cv);
     }
@@ -107,9 +108,9 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
             Trip trip = new Trip();
             trip.setId(cursor.getInt(0));
             trip.setName(cursor.getString(1));
-            trip.setTime(cursor.getString(2));
+            trip.setTime(convertToCalendar(cursor.getLong(2)));
             trip.setDestination(cursor.getString(3));
-            trip.setFriends(cursor.getString(4));
+            trip.setFriends(trip.convertStringToList(cursor.getString(4)));
             tripList.add(trip);
         }
         return tripList;
@@ -128,6 +129,53 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         return tripNameList;
     }
 
+    public List<String> getPastTripsName() {
+        List<String> tripNameList = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Long p = Calendar.getInstance().getTimeInMillis();
+        Cursor cursor = db.rawQuery("select name from " + TABLE_TRIP + " where time < ?;", new String[]{String.valueOf(p - p%(24*60*60*1000))});
+
+        // loop through all query results
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            tripNameList.add(cursor.getString(0));
+        }
+        return tripNameList;
+    }
+
+    public List<String> getUpcomingTripsName() {
+        List<String> tripNameList = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Long u = Calendar.getInstance().getTimeInMillis();
+
+        Cursor cursor = db.rawQuery("select name from " + TABLE_TRIP + " where time > ?;", new String[]{String.valueOf(u - u%(24*60*60*1000) + 24*60*60*1000)});
+
+        // loop through all query results
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            tripNameList.add(cursor.getString(0));
+        }
+        return tripNameList;
+    }
+
+    public List<String> getCurTripsName() {
+        List<String> tripNameList = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Long c = Calendar.getInstance().getTimeInMillis();
+
+        Cursor cursor = db.rawQuery("select name from " + TABLE_TRIP + " where time between ? and ?;", new String[]{String.valueOf(c- c%(24*60*60*1000)),String.valueOf(c- c%(24*60*60*1000) + 24*60*60*1000)});
+
+        // loop through all query results
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            tripNameList.add(cursor.getString(0));
+        }
+        return tripNameList;
+    }
+
+
     public Trip getTrip(String tripName) {
         Trip trip = new Trip();
 
@@ -138,13 +186,18 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             trip.setId(cursor.getInt(0));
             trip.setName(cursor.getString(1));
-            trip.setTime(cursor.getString(2));
+            trip.setTime(convertToCalendar(cursor.getLong(2)));
             trip.setDestination(cursor.getString(3));
-            trip.setFriends(cursor.getString(4));
+            trip.setFriends(trip.convertStringToList(cursor.getString(4)));
         }
         return trip;
     }
 
+    private Calendar convertToCalendar(Long l){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(l);
+        return cal;
+    }
 
 
 }

@@ -7,13 +7,18 @@
     tools:context="com.nyu.cs9033.eta.controllers.TripHistoryActivity"
     android:orientation="vertical"
 >
-
-    <TextView android:text="@string/trip_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <ListView
-        android:id="@+id/currentTrips"
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+    </android.support.v4.view.ViewPager>
+
+    <!--<TextView android:text="@string/trip_history"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+    <!--<ListView-->
+        <!--android:id="@+id/currentTrips"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 
 </LinearLayout>

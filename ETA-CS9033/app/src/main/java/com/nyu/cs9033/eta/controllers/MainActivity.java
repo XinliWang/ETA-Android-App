@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import com.nyu.cs9033.eta.R;
 import com.nyu.cs9033.eta.models.Trip;
+import com.parse.Parse;
 
 public class MainActivity extends Activity{
 
@@ -22,7 +23,11 @@ public class MainActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "V1scd1EqtMZLCC7y0f0wQxdAgBLGVLL4BHDXPNSi", "rhERO6RWevEG7AdTieTQSBY7mnkd7MhhODtgpire");
+
 		// TODO - fill in here
         createButton = (Button)findViewById(R.id.main_createTrip);
         createButton.setOnClickListener(new View.OnClickListener(){

@@ -7,18 +7,18 @@ public class Person implements Parcelable {
 	
 	// Member fields should exist here, what else do you need for a person?
 	// Please add additional fields
-    //private int id;
+    private int id;
 	private String name;
     //private String location;
     //private long phone;
 
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

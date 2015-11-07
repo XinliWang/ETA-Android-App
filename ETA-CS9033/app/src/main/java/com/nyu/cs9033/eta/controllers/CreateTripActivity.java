@@ -22,10 +22,15 @@ import android.widget.Toast;
 
 import com.nyu.cs9033.eta.R;
 import com.nyu.cs9033.eta.db.TripDatabaseHelper;
+import com.nyu.cs9033.eta.models.Person;
 import com.nyu.cs9033.eta.models.Trip;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class CreateTripActivity extends Activity{
 	
@@ -46,7 +51,8 @@ public class CreateTripActivity extends Activity{
     private TextView location;
     private Calendar calendar = Calendar.getInstance();;
     private Trip newTrip;
-
+    private ArrayList<String> contactsName;
+    private ArrayList<Person> friends;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,8 @@ public class CreateTripActivity extends Activity{
         trip_friends = (TextView) findViewById(R.id.friends);
         trip_destination = (EditText) findViewById(R.id.destination);
         location = (TextView) findViewById(R.id.location);
+        contactsName = new ArrayList<String>();
+        friends = new ArrayList<Person>();
 
         //fill in date
         initTripDate();
@@ -195,10 +203,20 @@ public class CreateTripActivity extends Activity{
         }else{
             newTrip = new Trip();
             temp_time = temp_date+" "+temp_time;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Calendar cal = Calendar.getInstance();
+            try {
+                Date startDate = df.parse(temp_time);
+                cal.setTime(startDate);
+                Log.e("time:",cal.toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             newTrip.setName(temp_name);
             newTrip.setDestination(temp_destination);
-            newTrip.setTime(temp_time);
-            newTrip.setFriends(temp_friends);
+            newTrip.setTime(cal);
+            newTrip.setFriends(friends);
             return newTrip;
         }
 
@@ -290,10 +308,19 @@ public class CreateTripActivity extends Activity{
             String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             Log.e("name :***: ", name);
-            String contracts = trip_friends.getText().toString();
-            trip_friends.setText(contracts.length() == 0? name : contracts + "," + name);
-            contactId = null;
-            name = null;
+            if(contactsName.contains(name)){
+                Toast.makeText(CreateTripActivity.this, "You have already added this person",Toast.LENGTH_SHORT).show();
+                return;
+            }else{
+                contactsName.add(name);
+                Person person = new Person(name);
+                friends.add(person);
+                String contracts = trip_friends.getText().toString();
+                trip_friends.setText(contracts.length() == 0? name : contracts + "," + name);
+                contactId = null;
+                name = null;
+            }
+
         }
         contact_resolver = null;
         cursor.close();

@@ -3,6 +3,9 @@ package com.nyu.cs9033.eta.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 public class Trip implements Parcelable {
 	
 	// Member fields should exist here, what else do you need for a trip?
@@ -10,8 +13,8 @@ public class Trip implements Parcelable {
     private int id;
 	private String name;
 	private String destination;
-	private String time;
-    private String friends;
+	private Calendar time;
+    private ArrayList<Person> friends;
 
     public int getId() {
         return id;
@@ -37,19 +40,19 @@ public class Trip implements Parcelable {
         this.destination = destination;
     }
 
-    public String getTime() {
+    public Calendar getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Calendar time) {
         this.time = time;
     }
 
-    public String getFriends() {
+    public ArrayList<Person> getFriends() {
         return friends;
     }
 
-    public void setFriends(String friends) {
+    public void setFriends(ArrayList<Person> friends) {
         this.friends = friends;
     }
 
@@ -74,12 +77,14 @@ public class Trip implements Parcelable {
 	 * Model fields.
 	 */
 	public Trip(Parcel p) {
-		
+
 		// TODO - fill in here
         name = p.readString();
         destination = p.readString();
-        time = p.readString();
-        friends = p.readString();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(p.readLong());
+        time = cal;
+        friends = convertStringToList(p.readString());
 	}
 	
 	/**
@@ -88,7 +93,7 @@ public class Trip implements Parcelable {
 	 * @param name  Add arbitrary number of arguments to
 	 * instantiate Trip class based on member variables.
 	 */
-	public Trip(String name,String destination,String time,String friends) {
+	public Trip(String name,String destination,Calendar time,ArrayList<Person> friends) {
 		
 		// TODO - fill in here, please note you must have more arguments here
         this.name = name;
@@ -112,14 +117,14 @@ public class Trip implements Parcelable {
 	 */
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		
+
 		// TODO - fill in here
         dest.writeString(this.name);
         dest.writeString(this.destination);
-        dest.writeString(this.time);
-        dest.writeString(this.friends);
+        dest.writeLong(this.time.getTimeInMillis());
+        dest.writeString(convertListToString(this.friends));
 	}
-	
+
 	/**
 	 * Feel free to add additional functions as necessary below.
 	 */
@@ -134,6 +139,37 @@ public class Trip implements Parcelable {
 		// Do not implement!
 		return 0;
 	}
+
+    /**
+     * Convert String to list
+     */
+    public ArrayList<Person> convertStringToList(String string){
+        String[] array = string.split(",");
+        ArrayList<Person> list = new ArrayList<Person>();
+        for(String a : array){
+            Person person = new Person(a);
+            list.add(person);
+        }
+        return list;
+    }
+
+    /**
+     * Convert list to String
+     */
+    public String convertListToString(ArrayList<Person> friends){
+        String people ="";
+        int i=0;
+        while(i<friends.size()){
+            if(i==0){
+                people = friends.get(i).getName();
+            }else{
+                people = people + "," + friends.get(i).getName();
+            }
+            i++;
+        }
+
+        return people;
+    }
 
 }
 
