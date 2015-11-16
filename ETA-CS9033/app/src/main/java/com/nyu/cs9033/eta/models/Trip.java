@@ -10,17 +10,17 @@ public class Trip implements Parcelable {
 	
 	// Member fields should exist here, what else do you need for a trip?
 	// Please add additional fields
-    private int id;
+    private long id;
 	private String name;
 	private String destination;
 	private Calendar time;
     private ArrayList<Person> friends;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -170,6 +170,15 @@ public class Trip implements Parcelable {
 
         return people;
     }
-
+    /**
+     * Convert list<Person> to list<String>
+     */
+    public ArrayList<String> converToListString(ArrayList<Person> friends){
+        ArrayList<String> list = new ArrayList<String>();
+        for(int i=0;i<friends.size();i++){
+            list.add(friends.get(i).getName());
+        }
+        return list;
+    }
 }
 

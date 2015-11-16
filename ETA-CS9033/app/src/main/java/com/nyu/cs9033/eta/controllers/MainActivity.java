@@ -8,14 +8,15 @@ import android.widget.Button;
 
 import com.nyu.cs9033.eta.R;
 import com.nyu.cs9033.eta.models.Trip;
-import com.parse.Parse;
 
 public class MainActivity extends Activity{
 
 	private static final String TAG = "MainActivity";
     private static final int CREATE_CODE = 1;
+    private static final int CUR_TRIP = 2;
     private Button createButton;
     private Button viewButton;
+
     private Trip trip;
 
 
@@ -25,8 +26,8 @@ public class MainActivity extends Activity{
 		setContentView(R.layout.activity_main);
 
         // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "V1scd1EqtMZLCC7y0f0wQxdAgBLGVLL4BHDXPNSi", "rhERO6RWevEG7AdTieTQSBY7mnkd7MhhODtgpire");
+        //Parse.enableLocalDatastore(this);
+        //Parse.initialize(this, "V1scd1EqtMZLCC7y0f0wQxdAgBLGVLL4BHDXPNSi", "rhERO6RWevEG7AdTieTQSBY7mnkd7MhhODtgpire");
 
 		// TODO - fill in here
         createButton = (Button)findViewById(R.id.main_createTrip);
@@ -86,14 +87,19 @@ public class MainActivity extends Activity{
 	 * use, i.e. to view the trip.
 	 * 
 	 */
-//	@Override
-//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		// TODO - fill in here
-//        if(resultCode==CREATE_CODE){
-//            trip = data.getParcelableExtra("create_trip");
-//        }else if(resultCode==RESULT_CANCELED){
-//            Toast.makeText(this, "Pause to create trip!", Toast.LENGTH_LONG).show();
-//        }
-//	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO - fill in here
+        if(resultCode==CUR_TRIP){
+            trip = data.getParcelableExtra("currentTrip");
+
+
+
+
+
+
+
+        }
+	}
 
 }

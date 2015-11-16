@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.InputType;
@@ -24,6 +25,10 @@ import com.nyu.cs9033.eta.R;
 import com.nyu.cs9033.eta.db.TripDatabaseHelper;
 import com.nyu.cs9033.eta.models.Person;
 import com.nyu.cs9033.eta.models.Trip;
+import com.nyu.cs9033.eta.util.JsonUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -39,6 +44,7 @@ public class CreateTripActivity extends Activity{
     private static final int SEARCH_LOCATION = 2;
     private static final int PICK_CONTACT = 3;
     private final Uri URI_HW3API = Uri.parse("location://com.example.nyu.hw3api");
+    private static final String URL_SERVER = "http://cs9033-homework.appspot.com/";
     private Button searchButton;
     private Button addContactButton;
 	private Button createTripButton;
@@ -51,8 +57,10 @@ public class CreateTripActivity extends Activity{
     private TextView location;
     private Calendar calendar = Calendar.getInstance();;
     private Trip newTrip;
+    private JSONObject object = new JSONObject();
     private ArrayList<String> contactsName;
     private ArrayList<Person> friends;
+    private ArrayList<String> list;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -163,7 +171,11 @@ public class CreateTripActivity extends Activity{
         createTripButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                newTrip = createTrip();
+                try {
+                    newTrip = createTrip();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 saveTrip(newTrip);
             }
         });
@@ -186,7 +198,7 @@ public class CreateTripActivity extends Activity{
 	 * @return The Trip as represented
 	 * by the View.
 	 */
-	public Trip createTrip() {
+	public Trip createTrip() throws JSONException {
 	
 		// TODO - fill in here
 		trip_name =(EditText)findViewById(R.id.name);
@@ -208,8 +220,18 @@ public class CreateTripActivity extends Activity{
             try {
                 Date startDate = df.parse(temp_time);
                 cal.setTime(startDate);
-                Log.e("time:",cal.toString());
+                Log.e("time:", cal.toString());
             } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                object.put("command", "CREATE_TRIP");
+                object.put("location", list);
+                object.put("datetime", cal.getTimeInMillis());
+                object.put("people", newTrip.converToListString(friends));
+                new HttpAsyncTask().execute(URL_SERVER);
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -334,10 +356,11 @@ public class CreateTripActivity extends Activity{
      */
     protected void getLocationInfo(Intent intent){
         //get the result
-        ArrayList<String> list = intent.getExtras().getStringArrayList("retVal");
+
+        list = intent.getExtras().getStringArrayList("retVal");
         if(!list.isEmpty()){
             String locationInfo = list.get(0) + " : " + list.get(1);
-            Log.e("location:",locationInfo);
+            Log.e("location:", locationInfo);
             location.setText(locationInfo);
         }
     }
@@ -353,6 +376,31 @@ public class CreateTripActivity extends Activity{
         if(location!=null && location.length()>0){
             intent.putExtra("searchVal", location);
             startActivityForResult(intent, SEARCH_LOCATION);
+        }
+
+    }
+
+
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String...params){
+            JsonUtil jsonUtil = new JsonUtil();
+            return jsonUtil.connectServer(params[0],object);
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            JSONObject response = null;
+            try {
+                response = new JSONObject(result);
+                if((Integer)response.get("response_code")==0){
+                    newTrip.setId(response.getLong("trip_id"));
+                    Log.i("ID:",response.getString("trip_id"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
     }

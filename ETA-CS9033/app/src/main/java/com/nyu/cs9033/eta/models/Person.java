@@ -9,7 +9,7 @@ public class Person implements Parcelable {
 	// Please add additional fields
     private int id;
 	private String name;
-    //private String location;
+    private String location;
     //private long phone;
 
     public int getId() {
@@ -28,13 +28,13 @@ public class Person implements Parcelable {
         this.name = name;
     }
 
-//    public String getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(String location) {
-//        this.location = location;
-//    }
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 //
 //    public long getPhone() {
 //        return phone;
