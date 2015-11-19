@@ -11,11 +11,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by wangxinli on 11/15/15.
- */
+
 public class JsonUtil {
     private URL url;
+
+    /**
+     *  This method will provide connection between client and server.
+     *  We send Json format data to server and get the response from server.
+     */
     public String connectServer(String newUrl,JSONObject object){
         String result="";
         try {
