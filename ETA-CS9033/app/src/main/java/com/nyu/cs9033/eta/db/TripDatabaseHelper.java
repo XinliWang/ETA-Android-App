@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.nyu.cs9033.eta.models.Trip;
 
@@ -19,7 +20,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "trips";
 
     private static final String TABLE_TRIP = "trip";
-    private static final String COLUMN_TRIP_ID = "_id"; // convention
+    private static final String COLUMN_TRIP_ID = "trip_id"; // convention
     private static final String COLUMN_TRIP_NAME = "name";
     private static final String COLUMN_TRIP_TIME = "time";
     private static final String COLUMN_TRIP_FRIENDS = "friends";
@@ -43,9 +44,9 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //create trip table
         String tripTable = "create table " + TABLE_TRIP + "("
-            + COLUMN_TRIP_ID + " integer primary key, "
+            + COLUMN_TRIP_ID + " real, "
             + COLUMN_TRIP_NAME + " text, "
-            + COLUMN_TRIP_TIME + " integer, "
+            + COLUMN_TRIP_TIME + " real, "
             + COLUMN_TRIP_DESTINATION + " text, "
             + COLUMN_TRIP_FRIENDS + " text)";
 
@@ -76,6 +77,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 
     //insert new trip into database
     public long insertTrip(Trip trip) {
+        Log.i("Insert ID:",String.valueOf(trip.getId()));
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_TRIP_ID,trip.getId());
         cv.put(COLUMN_TRIP_NAME,trip.getName());
@@ -191,11 +193,12 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 
         // loop through all query results
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            trip.setId(cursor.getInt(0));
+            trip.setId(cursor.getLong(0));
             trip.setName(cursor.getString(1));
             trip.setTime(convertToCalendar(cursor.getLong(2)));
             trip.setDestination(cursor.getString(3));
             trip.setFriends(trip.convertStringToList(cursor.getString(4)));
+            Log.i("Data ID:",String.valueOf(cursor.getLong(0)));
         }
         return trip;
     }
