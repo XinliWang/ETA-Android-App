@@ -79,6 +79,7 @@ public class Trip implements Parcelable {
 	public Trip(Parcel p) {
 
 		// TODO - fill in here
+        id = p.readLong();
         name = p.readString();
         destination = p.readString();
         Calendar cal = Calendar.getInstance();
@@ -93,9 +94,10 @@ public class Trip implements Parcelable {
 	 * @param name  Add arbitrary number of arguments to
 	 * instantiate Trip class based on member variables.
 	 */
-	public Trip(String name,String destination,Calendar time,ArrayList<Person> friends) {
+	public Trip(Long id,String name,String destination,Calendar time,ArrayList<Person> friends) {
 		
 		// TODO - fill in here, please note you must have more arguments here
+        this.id = id;
         this.name = name;
         this.destination = destination;
         this.time = time;
@@ -119,6 +121,7 @@ public class Trip implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 
 		// TODO - fill in here
+        dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeString(this.destination);
         dest.writeLong(this.time.getTimeInMillis());
