@@ -14,6 +14,7 @@ import com.nyu.cs9033.eta.db.TripDatabaseHelper;
 import com.nyu.cs9033.eta.models.Trip;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class ViewTripActivity extends Activity {
 
@@ -22,7 +23,8 @@ public class ViewTripActivity extends Activity {
 	private Trip trip;
     private TripDatabaseHelper helper;
     private Button startButton;
-	@Override
+    private Calendar calendar = Calendar.getInstance();
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -30,10 +32,14 @@ public class ViewTripActivity extends Activity {
         setContentView(R.layout.activity_viewtrip);
 		trip = getTrip(getIntent());
 		viewTrip(trip);
-
-       initStartButton();
-
-
+        long time = trip.getTime().getTimeInMillis();
+        /**
+         * If this trip has past, we cannot start this trip and will hint the start button,
+         * else we can start to this trip
+         */
+        if(calendar.getTimeInMillis() <= (time - time%(24*60*60*1000))){
+            initStartButton();
+        }
 
 	}
 	
@@ -83,6 +89,7 @@ public class ViewTripActivity extends Activity {
 
             text_time.setText(ft.format(trip.getTime().getTime()));
             text_friends.setText(trip.convertListToString(trip.getFriends()));
+
         }else{
             new AlertDialog.Builder(this)
                     .setTitle("Alerting Message")
@@ -96,15 +103,21 @@ public class ViewTripActivity extends Activity {
         }
 	}
 
+    /**
+     * Start to this trip and track it as your current trip
+     */
     private void initStartButton(){
         startButton = (Button)findViewById(R.id.button_startTrip);
+        startButton.setVisibility(View.VISIBLE);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ViewTripActivity.this,MainActivity.class);
                 intent.putExtra("currentTrip",trip);
-                startActivityForResult(intent, CUR_TRIP);
+                startActivity(intent);
             }
         });
     }
+
+
 }

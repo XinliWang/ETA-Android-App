@@ -6,6 +6,8 @@ import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -55,8 +57,9 @@ public class CreateTripActivity extends Activity{
     private EditText trip_time;
     private TextView trip_friends;
     private TextView location;
-    private Calendar calendar = Calendar.getInstance();;
-    private Trip newTrip;
+    private Calendar calendar = Calendar.getInstance();
+    private Calendar cal;
+    private Trip newTrip = new Trip();
     private JSONObject object = new JSONObject();
     private ArrayList<String> contactsName;
     private ArrayList<Person> friends;
@@ -73,6 +76,7 @@ public class CreateTripActivity extends Activity{
         trip_friends = (TextView) findViewById(R.id.friends);
         trip_destination = (EditText) findViewById(R.id.destination);
         location = (TextView) findViewById(R.id.location);
+        trip_name =(EditText)findViewById(R.id.name);
         contactsName = new ArrayList<String>();
         friends = new ArrayList<Person>();
 
@@ -171,12 +175,44 @@ public class CreateTripActivity extends Activity{
         createTripButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                try {
-                    newTrip = createTrip();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                String temp_name = trip_name.getText().toString().trim();
+                String temp_destination = location.getText().toString().trim();
+                String temp_friends = trip_friends.getText().toString().trim();
+
+                String temp_time = trip_time.getText().toString().trim();
+                String temp_date = trip_date.getText().toString().trim();
+
+                if(TextUtils.isEmpty(temp_name)||TextUtils.isEmpty(temp_destination)||TextUtils.isEmpty(temp_date)||TextUtils.isEmpty(temp_time)||TextUtils.isEmpty(temp_friends)){
+                    Toast.makeText(CreateTripActivity.this, "All information are required!", Toast.LENGTH_LONG).show();
+                }else {
+                    temp_time = temp_date+" "+temp_time;
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    cal = Calendar.getInstance();
+                    try {
+                        Date startDate = df.parse(temp_time);
+                        cal.setTime(startDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        //set the json object
+                        object.put("command", "CREATE_TRIP");
+                        object.put("location", list);
+                        object.put("datetime", cal.getTimeInMillis());
+                        object.put("people", newTrip.converToListString(friends));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(isOnline()){
+                        //when everything is done, we call this method to send and get data from server
+                        new HttpAsyncTask().execute(URL_SERVER);
+                    }else{
+                        Toast.makeText(getBaseContext(),
+                                "Your network is not connected!", Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
-                saveTrip(newTrip);
             }
         });
     }
@@ -201,7 +237,7 @@ public class CreateTripActivity extends Activity{
 	public Trip createTrip() throws JSONException {
 	
 		// TODO - fill in here
-		trip_name =(EditText)findViewById(R.id.name);
+
         String temp_name = trip_name.getText().toString().trim();
         String temp_destination = location.getText().toString().trim();
         String temp_friends = trip_friends.getText().toString().trim();
@@ -213,27 +249,6 @@ public class CreateTripActivity extends Activity{
             Toast.makeText(this, "All information are required!", Toast.LENGTH_LONG).show();
             return null;
         }else{
-            newTrip = new Trip();
-            temp_time = temp_date+" "+temp_time;
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            Calendar cal = Calendar.getInstance();
-            try {
-                Date startDate = df.parse(temp_time);
-                cal.setTime(startDate);
-                Log.e("time:", cal.toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                object.put("command", "CREATE_TRIP");
-                object.put("location", list);
-                object.put("datetime", cal.getTimeInMillis());
-                object.put("people", newTrip.converToListString(friends));
-                new HttpAsyncTask().execute(URL_SERVER);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
             newTrip.setName(temp_name);
             newTrip.setDestination(temp_destination);
@@ -261,6 +276,7 @@ public class CreateTripActivity extends Activity{
 		// TODO - fill in here
         if(trip!=null){
             TripDatabaseHelper helper = new TripDatabaseHelper(this);
+            Log.i("saveID:",String.valueOf(trip.getId()));
             helper.insertTrip(trip);
             finish();
             Toast.makeText(this, "Create trip successfully!", Toast.LENGTH_LONG).show();
@@ -380,10 +396,14 @@ public class CreateTripActivity extends Activity{
 
     }
 
-
+    /**
+     * Sending Http request to get Trip ID from server and save into trip
+     */
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String...params){
+            //send Json data into server
             JsonUtil jsonUtil = new JsonUtil();
             return jsonUtil.connectServer(params[0],object);
         }
@@ -392,10 +412,15 @@ public class CreateTripActivity extends Activity{
         protected void onPostExecute(String result){
             JSONObject response = null;
             try {
+                //get the result from server and convert from string to json object
                 response = new JSONObject(result);
-                if((Integer)response.get("response_code")==0){
-                    newTrip.setId(response.getLong("trip_id"));
-                    Log.i("ID:",response.getString("trip_id"));
+                if(response.getInt("response_code")==0){
+                    //get this trip
+                    Trip trip = createTrip();
+                    //set the trip id into trip
+                    trip.setId(response.getLong("trip_id"));
+                    //save this trip data into database
+                    saveTrip(trip);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -404,5 +429,18 @@ public class CreateTripActivity extends Activity{
         }
 
     }
+
+    /**
+     *This method is used to check the status of the network info.
+     */
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+
 
 }
