@@ -35,7 +35,7 @@
             android:text="@string/create_trips"
             android:id="@+id/main_createTrip"
             android:layout_marginBottom="41dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             />
 
         <Button
@@ -43,112 +43,64 @@
             android:layout_height="wrap_content"
             android:text="@string/trip_history"
             android:id="@+id/main_viewTripHistory"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="40dp"
             />
         </LinearLayout>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/current_trip"
-            android:id="@+id/curre"
-            android:typeface="serif"
-            android:textSize="25sp"
-            android:layout_gravity="center"
 
-            />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:visibility="invisible"
+            android:id="@+id/currentInfo"
             >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="18sp"
-            android:text="@string/trip_name"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/current_trip"
+                android:id="@+id/curre"
+                android:typeface="serif"
+                android:textSize="25sp"
+                android:layout_gravity="center"
+
+                />
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="20dp"
-            android:text=""/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:textSize="18sp"
-            android:text="@string/trip_destination"/>
+            android:text="Name: \n"/>
+
         <TextView
             android:id="@+id/destination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="20dp"
-            android:text=""/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:textSize="18sp"
-            android:text="@string/trip_time"/>
+            android:text="Destination: \n"/>
+
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textSize="15sp"
-            android:text=""/>
+            android:textSize="18sp"
+            android:text="Time: \n"/>
+
         <TextView
+            android:id="@+id/friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:textSize="18sp"
-            android:text="@string/trip_friends"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="15sp"
-            android:id="@+id/friends"
-            android:text=""/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="visible"
-            android:id="@+id/currentInfo"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textSize="13sp"
-                        android:text="@string/my_info"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textSize="13sp"
-                        android:text=""/>
+            android:text="Friends: \n"/>
 
-                </LinearLayout>
+
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -158,7 +110,7 @@
                     android:layout_marginLeft="60dp"
                     />
 
-            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,6 +118,7 @@
                 android:textSize="13sp"
                 android:text="@string/others_info"/>
             <TextView
+                android:id="@+id/otherDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

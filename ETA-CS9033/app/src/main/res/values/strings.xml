@@ -24,5 +24,8 @@
     <string name="my_info">My Infomation</string>
     <string name="others_info">Friends Information</string>
 
+    <string name="service_started">Location Service started</string>
+    <string name="service_label">Location Service Label</string>
+
 
 </resources>
