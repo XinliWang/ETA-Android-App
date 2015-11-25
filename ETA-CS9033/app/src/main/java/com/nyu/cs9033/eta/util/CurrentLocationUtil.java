@@ -16,6 +16,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.provider.Settings;
@@ -228,12 +229,19 @@ public class CurrentLocationUtil extends Service implements LocationListener{
      */
     @Override
     public IBinder onBind(Intent intent) {
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                timerTask();
-            }
-        }, 0, MIN_TIME_FOR_UPDATE);
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (Looper.myLooper() == null) {
+                        Looper.prepare();
+                    }
+                        timerTask();
+
+                }
+            }, 0, MIN_TIME_FOR_UPDATE);
+
+
         return messenger.getBinder();
     }
 
@@ -324,13 +332,16 @@ public class CurrentLocationUtil extends Service implements LocationListener{
      */
     private void timerTask(){
 
-        if(isOnline()) {
-            getLocation();
-            JsonUtil jsonUtil = new JsonUtil();
-            String s = jsonUtil.connectServer(URL_SERVER, getLocationJson());
-            Log.i("current:", s);
 
-        }
+            if (isOnline()) {
+                getLocation();
+                Log.i("la:", String.valueOf(latitude));
+                Log.i("lo:", String.valueOf(longitude));
+                JsonUtil jsonUtil = new JsonUtil();
+                String s = jsonUtil.connectServer(URL_SERVER, getLocationJson());
+                Log.i("current:", s);
+
+            }
 
     }
 
