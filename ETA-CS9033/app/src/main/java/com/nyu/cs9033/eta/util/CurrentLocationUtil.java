@@ -39,7 +39,7 @@ public class CurrentLocationUtil extends Service implements LocationListener{
     private static final String URL_SERVER = "http://cs9033-homework.appspot.com/";
     //The mininum distance to update location in 50 meters
     private static final long MIN_DISTANCE_FOR_UPDATE = 50;
-    //The minimum time to update location in 2 minutes
+    //The minimum time to update location in 1 minutes
     private static final long MIN_TIME_FOR_UPDATE = 1000*60*1;
 
     public static final int MSG_REGISTER_CLIENT = 1;

@@ -14,7 +14,7 @@ public class Trip implements Parcelable {
 	private String name;
 	private String destination;
 	private Calendar time;
-    private ArrayList<Person> friends;
+   // private ArrayList<Person> friends;
 
     public long getId() {
         return id;
@@ -48,13 +48,13 @@ public class Trip implements Parcelable {
         this.time = time;
     }
 
-    public ArrayList<Person> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(ArrayList<Person> friends) {
-        this.friends = friends;
-    }
+//    public ArrayList<Person> getFriends() {
+//        return friends;
+//    }
+//
+//    public void setFriends(ArrayList<Person> friends) {
+//        this.friends = friends;
+//    }
 
     /**
 	 * Parcelable creator. Do not modify this function.
@@ -85,7 +85,7 @@ public class Trip implements Parcelable {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(p.readLong());
         time = cal;
-        friends = convertStringToList(p.readString());
+       // friends = convertStringToList(p.readString());
 	}
 	
 	/**
@@ -94,14 +94,14 @@ public class Trip implements Parcelable {
 	 * @param name  Add arbitrary number of arguments to
 	 * instantiate Trip class based on member variables.
 	 */
-	public Trip(Long id,String name,String destination,Calendar time,ArrayList<Person> friends) {
-		
+//	public Trip(Long id,String name,String destination,Calendar time,ArrayList<Person> friends) {
+    public Trip(Long id,String name,String destination,Calendar time) {
 		// TODO - fill in here, please note you must have more arguments here
         this.id = id;
         this.name = name;
         this.destination = destination;
         this.time = time;
-        this.friends = friends;
+      //  this.friends = friends;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class Trip implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.destination);
         dest.writeLong(this.time.getTimeInMillis());
-        dest.writeString(convertListToString(this.friends));
+       // dest.writeString(convertListToString(this.friends));
 	}
 
 	/**
@@ -150,7 +150,10 @@ public class Trip implements Parcelable {
         String[] array = string.split(",");
         ArrayList<Person> list = new ArrayList<Person>();
         for(String a : array){
-            Person person = new Person(a);
+            String[] temp = string.split(":");
+            Person person = new Person();
+            person.setName(temp[0]);
+            person.setPhone(temp[1]);
             list.add(person);
         }
         return list;

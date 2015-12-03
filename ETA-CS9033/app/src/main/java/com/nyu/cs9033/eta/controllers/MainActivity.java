@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nyu.cs9033.eta.R;
+import com.nyu.cs9033.eta.db.TripDatabaseHelper;
 import com.nyu.cs9033.eta.models.Trip;
 import com.nyu.cs9033.eta.util.CurrentLocationUtil;
 import com.nyu.cs9033.eta.util.JsonUtil;
@@ -28,7 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends Activity{
 
@@ -47,10 +50,11 @@ public class MainActivity extends Activity{
     private TextView friendView;
     private TextView otherDetail;
     private Trip trip = new Trip();
+    private TripDatabaseHelper helper;
     CurrentLocationUtil currentLocationUtil;
     Calendar calendar = Calendar.getInstance();
     Messenger service = null;
-
+    StringBuilder friends = new StringBuilder();
     boolean isBound;
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +152,7 @@ public class MainActivity extends Activity{
 
     private Trip getCurInfo(Intent intent){
         trip = intent.getParcelableExtra("currentTrip");
-
+        helper = new TripDatabaseHelper(this);
         if(trip!=null){
             Log.i("TRip ID4:",String.valueOf(trip.getName()));
             currentInfo =(LinearLayout)findViewById(R.id.currentInfo);
@@ -161,7 +165,15 @@ public class MainActivity extends Activity{
             destView.append(trip.getDestination());
             SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             timeView.append(ft.format(trip.getTime().getTime()));
-            friendView.append(trip.convertListToString(trip.getFriends()));
+
+
+            List<String> list = new ArrayList<String>();
+            list = helper.getPersons(trip.getId());
+            for(String person:list){
+                friends.append(person+"\n");
+            }
+
+            friendView.append(friends.toString());
             Log.i("id:",String.valueOf(trip.getId()));
 
         }
@@ -263,9 +275,12 @@ private class HttpAsyncTask extends AsyncTask<String, Void, String> {
     }
 
     void doBindService() {
-        // Establish a connection with the service. We use an explicit
-        // class name because there is no reason to be able to let other
-        // applications interact with our component.
+        /**
+         *Establish a connection with the service. We use an explicit
+         *class name because there is no reason to be able to let other
+         * applications interact with our component.
+         */
+
         bindService(new Intent(MainActivity.this, CurrentLocationUtil.class),
                 connection, // ServiceConnection object
                 Context.BIND_AUTO_CREATE); // Create service if not

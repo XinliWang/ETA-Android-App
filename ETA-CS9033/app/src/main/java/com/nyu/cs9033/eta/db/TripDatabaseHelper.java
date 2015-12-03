@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.nyu.cs9033.eta.models.Person;
 import com.nyu.cs9033.eta.models.Trip;
 
 import java.util.ArrayList;
@@ -31,8 +32,15 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_LOC_TIMESTAMP = "timestamp";
     private static final String COLUMN_LOC_LAT = "latitude";
     private static final String COLUMN_LOC_LONG = "longitude";
-    private static final String COLUMN_LOC_ALT = "altitude";
-    private static final String COLUMN_LOC_PROVIDER = "provider";
+    private static final String COLUMN_LOC_NAME = "name";
+    private static final String COLUMN_LOC_ADDRESS = "address";
+
+    private static final String TABLE_PERSON = "person";
+    private static final String COLUMN_PERSON_TRIPID = "trip_id";
+    private static final String COLUMN_PERSON_NAME = "name";
+    private static final String COLUMN_PERSON_PHONE = "phone";
+    private static final String COLUMN_PERSON_IS_ARRIVED = "isArrived";
+
 
 
     public TripDatabaseHelper(Context context) {
@@ -43,25 +51,32 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //create trip table
-        String tripTable = "create table " + TABLE_TRIP + "("
-            + COLUMN_TRIP_ID + " real, "
-            + COLUMN_TRIP_NAME + " text, "
+        String tripTable = "create table if not exists " + TABLE_TRIP + "("
+            + COLUMN_TRIP_ID + " integer, "
+            + COLUMN_TRIP_NAME + " varchar(100), "
             + COLUMN_TRIP_TIME + " real, "
-            + COLUMN_TRIP_DESTINATION + " text, "
-            + COLUMN_TRIP_FRIENDS + " text)";
+            + COLUMN_TRIP_DESTINATION + " varchar(100))";
 
         db.execSQL(tripTable);
 
-        // create location table
-//        String locationTable = "create table " + TABLE_LOCATION + "("
-//            + COLUMN_LOC_TRIPID + " integer references trip(_id), "
-//            + COLUMN_LOC_TIMESTAMP + " integer, "
-//            + COLUMN_LOC_LAT + " real, "
-//            + COLUMN_LOC_LONG + " real, "
-//            + COLUMN_LOC_ALT + " real, "
-//            + COLUMN_LOC_PROVIDER + " varchar(100))";
-//
-//        db.execSQL(locationTable);
+        //create location table
+        String locationTable = "create table if not exists " + TABLE_LOCATION + "("
+            + COLUMN_LOC_TRIPID + " integer references trip(_id), "
+            + COLUMN_LOC_NAME + " varchar(100), "
+            + COLUMN_LOC_ADDRESS + " varchar(100),"
+                + COLUMN_LOC_LAT + " varchar(100), "
+                + COLUMN_LOC_LONG + " varchar(100))";
+
+        db.execSQL(locationTable);
+
+        //create person table
+        String personTable = "create table if not exists " + TABLE_PERSON + "("
+                + COLUMN_PERSON_TRIPID + " integer references trip(_id), "
+                + COLUMN_PERSON_NAME + " varchar(100), "
+                + COLUMN_PERSON_PHONE + " varchar(100),"
+                + COLUMN_PERSON_IS_ARRIVED + " varchar(100))";
+
+        db.execSQL(personTable);
 
     }
 
@@ -70,6 +85,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         // Drop older table if exists
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRIP);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSON);
         // create tables again
         onCreate(db);
 
@@ -77,28 +93,46 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 
     //insert new trip into database
     public long insertTrip(Trip trip) {
-        Log.i("Insert ID:",String.valueOf(trip.getId()));
+        Log.i("Insert ID:", String.valueOf(trip.getId()));
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_TRIP_ID,trip.getId());
         cv.put(COLUMN_TRIP_NAME,trip.getName());
         cv.put(COLUMN_TRIP_TIME, trip.getTime().getTimeInMillis());
         cv.put(COLUMN_TRIP_DESTINATION, trip.getDestination());
-        cv.put(COLUMN_TRIP_FRIENDS, trip.convertListToString(trip.getFriends()));
+        //cv.put(COLUMN_TRIP_FRIENDS, trip.convertListToString(trip.getFriends()));
         // return id of new trip
         return getWritableDatabase().insert(TABLE_TRIP, null, cv);
     }
 
-//    public long insertLocation(long tripId, Location location) {
-//        ContentValues cv = new ContentValues();
-//        cv.put(COLUMN_LOC_TRIPID, tripId);
-//        cv.put(COLUMN_LOC_TIMESTAMP, location.getTime());
-//        cv.put(COLUMN_LOC_LAT, location.getLatitude());
-//        cv.put(COLUMN_LOC_LONG, location.getLongitude());
-//        cv.put(COLUMN_LOC_ALT, location.getAltitude());
-//        cv.put(COLUMN_LOC_PROVIDER, location.getProvider());
-//        // return id of new location
-//        return getWritableDatabase().insert(TABLE_LOCATION, null, cv);
-//    }
+    //insert new location into database
+    public long insertLocation(long tripId, ArrayList<String> location) {
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_LOC_TRIPID, tripId);
+        cv.put(COLUMN_LOC_NAME, location.get(0));
+        cv.put(COLUMN_LOC_ADDRESS, location.get(1));
+        cv.put(COLUMN_LOC_LAT, location.get(2));
+        cv.put(COLUMN_LOC_LONG, location.get(3));
+
+
+        // return id of new location
+        return getWritableDatabase().insert(TABLE_LOCATION, null, cv);
+    }
+
+    //insert new contract infor into database
+    public void insertPerson(long tripId, ArrayList<Person> contracts) {
+        for(Person contract: contracts){
+            ContentValues cv = new ContentValues();
+
+            cv.put(COLUMN_PERSON_TRIPID, tripId);
+            cv.put(COLUMN_PERSON_NAME, contract.getName());
+            cv.put(COLUMN_PERSON_PHONE, contract.getPhone());
+            cv.put(COLUMN_PERSON_IS_ARRIVED, contract.isArrival());
+
+            // return id of new location
+            getWritableDatabase().insert(TABLE_PERSON, null, cv);
+        }
+
+    }
 
     //get all trips list
     public List<Trip> getAllTrips() {
@@ -114,7 +148,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
             trip.setName(cursor.getString(1));
             trip.setTime(convertToCalendar(cursor.getLong(2)));
             trip.setDestination(cursor.getString(3));
-            trip.setFriends(trip.convertStringToList(cursor.getString(4)));
+           // trip.setFriends(trip.convertStringToList(cursor.getString(4)));
             tripList.add(trip);
         }
         return tripList;
@@ -197,10 +231,26 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
             trip.setName(cursor.getString(1));
             trip.setTime(convertToCalendar(cursor.getLong(2)));
             trip.setDestination(cursor.getString(3));
-            trip.setFriends(trip.convertStringToList(cursor.getString(4)));
+          //  trip.setFriends(trip.convertStringToList(cursor.getString(4)));
             Log.i("Data ID:",String.valueOf(cursor.getLong(0)));
         }
         return trip;
+    }
+
+
+    //get the list of person(name and phone) for specific trip
+    public List<String> getPersons(long tripId){
+        List<String> personsList = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("select name,phone from " + TABLE_PERSON + " where trip_id = ? ;",new String[]{String.valueOf(tripId)});
+
+        // loop through all query results
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            personsList.add(cursor.getString(0)+":"+cursor.getString(1));
+        }
+        return personsList;
     }
 
     /**

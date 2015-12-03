@@ -14,7 +14,9 @@ import com.nyu.cs9033.eta.db.TripDatabaseHelper;
 import com.nyu.cs9033.eta.models.Trip;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ViewTripActivity extends Activity {
 
@@ -24,6 +26,7 @@ public class ViewTripActivity extends Activity {
     private TripDatabaseHelper helper;
     private Button startButton;
     private Calendar calendar = Calendar.getInstance();
+    StringBuilder friends = new StringBuilder();
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,7 +40,7 @@ public class ViewTripActivity extends Activity {
          * If this trip has past, we cannot start this trip and will hint the start button,
          * else we can start to this trip
          */
-        if(calendar.getTimeInMillis() <= (time - time%(24*60*60*1000))){
+        if(calendar.getTimeInMillis() <= time){
             initStartButton();
         }
 
@@ -61,6 +64,13 @@ public class ViewTripActivity extends Activity {
 		String tripName = i.getStringExtra("specificTrip");
         if(tripName!=null && tripName.length()>0){
             trip = helper.getTrip(tripName);
+
+            List<String> list = new ArrayList<String>();
+            list = helper.getPersons(trip.getId());
+            for(String person:list){
+                friends.append(person+"\n");
+            }
+
             return trip;
         }else{
             return null;
@@ -88,7 +98,8 @@ public class ViewTripActivity extends Activity {
             SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
             text_time.setText(ft.format(trip.getTime().getTime()));
-            text_friends.setText(trip.convertListToString(trip.getFriends()));
+
+            text_friends.setText(friends.toString());
 
         }else{
             new AlertDialog.Builder(this)

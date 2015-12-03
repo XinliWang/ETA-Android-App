@@ -10,7 +10,8 @@ public class Person implements Parcelable {
     private int id;
 	private String name;
     private String location;
-    //private long phone;
+    private String phone;
+	private boolean isArrival = false;
 
     public int getId() {
         return id;
@@ -35,16 +36,24 @@ public class Person implements Parcelable {
     public void setLocation(String location) {
         this.location = location;
     }
-//
-//    public long getPhone() {
-//        return phone;
-//    }
-//
-//    public void setPhone(long phone) {
-//        this.phone = phone;
-//    }
 
-    /**
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+	public boolean isArrival() {
+		return this.isArrival;
+	}
+
+	public void setIsArrival(boolean isArrival) {
+		this.isArrival = isArrival;
+	}
+
+	/**
 	 * Parcelable creator. Do not modify this function.
 	 */
 	public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
@@ -68,8 +77,9 @@ public class Person implements Parcelable {
 		
 		// TODO - fill in here
         name = p.readString();
-//		location = p.readString();
-//        phone = p.readLong();
+		location = p.readString();
+        phone = p.readString();
+
 	}
 	
 	/**
@@ -78,12 +88,12 @@ public class Person implements Parcelable {
 	 * @param name Add arbitrary number of arguments to
 	 * instantiate Person class based on member variables.
 	 */
-	public Person(String name) {
+	public Person(String name,String location,String phone) {
 		
 		// TODO - fill in here, please note you must have more arguments here
         this.name = name;
-//        this.location = location;
-//        this.phone = phone;
+        this.location = location;
+        this.phone = phone;
 	}
 
 	/**
@@ -104,8 +114,8 @@ public class Person implements Parcelable {
 		
 		// TODO - fill in here
         dest.writeString(this.name);
-        //dest.writeString(this.location);
-        //dest.writeLong(this.phone);
+        dest.writeString(this.location);
+        dest.writeString(this.phone);
 	}
 	
 	/**

@@ -62,8 +62,10 @@ public class CreateTripActivity extends Activity{
     private Trip newTrip = new Trip();
     private JSONObject object = new JSONObject();
     private ArrayList<String> contactsName;
+    private ArrayList<String> contactsPhone;
     private ArrayList<Person> friends;
     private ArrayList<String> list;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class CreateTripActivity extends Activity{
         location = (TextView) findViewById(R.id.location);
         trip_name =(EditText)findViewById(R.id.name);
         contactsName = new ArrayList<String>();
+        contactsPhone = new ArrayList<String>();
         friends = new ArrayList<Person>();
 
         //fill in date
@@ -253,7 +256,7 @@ public class CreateTripActivity extends Activity{
             newTrip.setName(temp_name);
             newTrip.setDestination(temp_destination);
             newTrip.setTime(cal);
-            newTrip.setFriends(friends);
+            //newTrip.setFriends(friends);
             return newTrip;
         }
 
@@ -278,6 +281,8 @@ public class CreateTripActivity extends Activity{
             TripDatabaseHelper helper = new TripDatabaseHelper(this);
             Log.i("saveID:",String.valueOf(trip.getId()));
             helper.insertTrip(trip);
+            helper.insertLocation(trip.getId(), list);
+            helper.insertPerson(trip.getId(),friends);
             finish();
             Toast.makeText(this, "Create trip successfully!", Toast.LENGTH_LONG).show();
             return true;
@@ -345,18 +350,43 @@ public class CreateTripActivity extends Activity{
         {
             String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+            int phoneCount = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+            String phone ="";
+            if (phoneCount>0){
+                Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+
+                        + " = " + contactId, null, null);
+
+                if(phones.moveToFirst()){
+                    do{
+                        phone= phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                    }while(phones.moveToNext());
+                }
+            }
+
+
             Log.e("name :***: ", name);
-            if(contactsName.contains(name)){
+            Log.e("phone :***: ", phone);
+            if(contactsName.contains(name)&&contactsPhone.contains(phone)){
                 Toast.makeText(CreateTripActivity.this, "You have already added this person",Toast.LENGTH_SHORT).show();
                 return;
             }else{
                 contactsName.add(name);
-                Person person = new Person(name);
+                contactsPhone.add(phone);
+
+                Person person = new Person();
+                person.setName(name);
+                person.setPhone(phone);
+
                 friends.add(person);
                 String contracts = trip_friends.getText().toString();
+
                 trip_friends.setText(contracts.length() == 0? name : contracts + "," + name);
                 contactId = null;
                 name = null;
+                phone = null;
             }
 
         }
@@ -371,9 +401,13 @@ public class CreateTripActivity extends Activity{
      * which we have chosen
      */
     protected void getLocationInfo(Intent intent){
-        //get the result
+        /**
+         * 1. get the destination informaiton of location list
+         * 2. the structure of list is : name , address, latitude , longitude
+         */
 
         list = intent.getExtras().getStringArrayList("retVal");
+
         if(!list.isEmpty()){
             String locationInfo = list.get(0) + " : " + list.get(1);
             Log.e("location:", locationInfo);
