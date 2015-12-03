@@ -25,6 +25,7 @@ public class ViewTripActivity extends Activity {
 	private Trip trip;
     private TripDatabaseHelper helper;
     private Button startButton;
+    private Button stopButton;
     private Calendar calendar = Calendar.getInstance();
     StringBuilder friends = new StringBuilder();
     @Override
@@ -40,8 +41,8 @@ public class ViewTripActivity extends Activity {
          * If this trip has past, we cannot start this trip and will hint the start button,
          * else we can start to this trip
          */
-        if(calendar.getTimeInMillis() <= time){
-            initStartButton();
+        if(calendar.getTimeInMillis() <= time && trip.isActive()==1){
+            initStartAndStopButton();
         }
 
 	}
@@ -117,7 +118,7 @@ public class ViewTripActivity extends Activity {
     /**
      * Start to this trip and track it as your current trip
      */
-    private void initStartButton(){
+    private void initStartAndStopButton(){
         startButton = (Button)findViewById(R.id.button_startTrip);
         startButton.setVisibility(View.VISIBLE);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +129,17 @@ public class ViewTripActivity extends Activity {
                 startActivity(intent);
             }
         });
+        stopButton = (Button)findViewById(R.id.button_stopTrip);
+        stopButton.setVisibility(View.VISIBLE);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startButton.setVisibility(View.INVISIBLE);
+                stopButton.setVisibility(View.INVISIBLE );
+                helper.updateTripStatus(trip.getId());
+            }
+        });
+
     }
 
 

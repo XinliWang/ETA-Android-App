@@ -24,7 +24,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TRIP_ID = "trip_id"; // convention
     private static final String COLUMN_TRIP_NAME = "name";
     private static final String COLUMN_TRIP_TIME = "time";
-    private static final String COLUMN_TRIP_FRIENDS = "friends";
+    private static final String COLUMN_TRIP_IS_ACTIVE = "isActive";
     private static final String COLUMN_TRIP_DESTINATION = "destination";
 
     private static final String TABLE_LOCATION = "location";
@@ -39,7 +39,8 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PERSON_TRIPID = "trip_id";
     private static final String COLUMN_PERSON_NAME = "name";
     private static final String COLUMN_PERSON_PHONE = "phone";
-    private static final String COLUMN_PERSON_IS_ARRIVED = "isArrived";
+    private static final String COLUMN_PERSON_LAT = "latitude";
+    private static final String COLUMN_PERSON_LONG = "longitude";
 
 
 
@@ -55,7 +56,8 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_TRIP_ID + " integer, "
             + COLUMN_TRIP_NAME + " varchar(100), "
             + COLUMN_TRIP_TIME + " real, "
-            + COLUMN_TRIP_DESTINATION + " varchar(100))";
+            + COLUMN_TRIP_DESTINATION + " varchar(100), "
+            + COLUMN_TRIP_IS_ACTIVE + " integer)";
 
         db.execSQL(tripTable);
 
@@ -74,7 +76,8 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_PERSON_TRIPID + " integer references trip(_id), "
                 + COLUMN_PERSON_NAME + " varchar(100), "
                 + COLUMN_PERSON_PHONE + " varchar(100),"
-                + COLUMN_PERSON_IS_ARRIVED + " varchar(100))";
+                + COLUMN_PERSON_LAT + " varchar(100),"
+                + COLUMN_PERSON_LONG + " varchar(100))";
 
         db.execSQL(personTable);
 
@@ -99,6 +102,8 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_TRIP_NAME,trip.getName());
         cv.put(COLUMN_TRIP_TIME, trip.getTime().getTimeInMillis());
         cv.put(COLUMN_TRIP_DESTINATION, trip.getDestination());
+        cv.put(COLUMN_TRIP_IS_ACTIVE,trip.isActive());
+
         //cv.put(COLUMN_TRIP_FRIENDS, trip.convertListToString(trip.getFriends()));
         // return id of new trip
         return getWritableDatabase().insert(TABLE_TRIP, null, cv);
@@ -126,7 +131,8 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
             cv.put(COLUMN_PERSON_TRIPID, tripId);
             cv.put(COLUMN_PERSON_NAME, contract.getName());
             cv.put(COLUMN_PERSON_PHONE, contract.getPhone());
-            cv.put(COLUMN_PERSON_IS_ARRIVED, contract.isArrival());
+            cv.put(COLUMN_PERSON_LAT, contract.getLatitude());
+            cv.put(COLUMN_PERSON_LONG, contract.getLongitude());
 
             // return id of new location
             getWritableDatabase().insert(TABLE_PERSON, null, cv);
@@ -231,6 +237,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
             trip.setName(cursor.getString(1));
             trip.setTime(convertToCalendar(cursor.getLong(2)));
             trip.setDestination(cursor.getString(3));
+            trip.setIsActive(cursor.getInt(4));
           //  trip.setFriends(trip.convertStringToList(cursor.getString(4)));
             Log.i("Data ID:",String.valueOf(cursor.getLong(0)));
         }
@@ -252,6 +259,21 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         }
         return personsList;
     }
+
+    public void updateTripStatus(long tripId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_TRIP_IS_ACTIVE,0);
+        db.update(TABLE_TRIP,cv,"trip_id = "+ tripId,null);
+    }
+
+//    public int getTripStatus(){
+//
+//    }
+
+
+
+
 
     /**
      * We use Integer to save calendar into database,

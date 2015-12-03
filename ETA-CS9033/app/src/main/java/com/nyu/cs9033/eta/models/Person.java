@@ -9,9 +9,9 @@ public class Person implements Parcelable {
 	// Please add additional fields
     private int id;
 	private String name;
-    private String location;
     private String phone;
-	private boolean isArrival = false;
+	private String latitude;
+    private String longitude;
 
     public int getId() {
         return id;
@@ -29,13 +29,7 @@ public class Person implements Parcelable {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
-    }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public String getPhone() {
         return phone;
@@ -45,15 +39,23 @@ public class Person implements Parcelable {
         this.phone = phone;
     }
 
-	public boolean isArrival() {
-		return this.isArrival;
-	}
+    public String getLatitude() {
+        return latitude;
+    }
 
-	public void setIsArrival(boolean isArrival) {
-		this.isArrival = isArrival;
-	}
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
-	/**
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
 	 * Parcelable creator. Do not modify this function.
 	 */
 	public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
@@ -77,9 +79,9 @@ public class Person implements Parcelable {
 		
 		// TODO - fill in here
         name = p.readString();
-		location = p.readString();
         phone = p.readString();
-
+        latitude = p.readString();
+        longitude = p.readString();
 	}
 	
 	/**
@@ -88,12 +90,13 @@ public class Person implements Parcelable {
 	 * @param name Add arbitrary number of arguments to
 	 * instantiate Person class based on member variables.
 	 */
-	public Person(String name,String location,String phone) {
+	public Person(String name,String phone,String latitude,String longitude) {
 		
 		// TODO - fill in here, please note you must have more arguments here
         this.name = name;
-        this.location = location;
         this.phone = phone;
+        this.latitude = latitude;
+        this.longitude = longitude;
 	}
 
 	/**
@@ -114,8 +117,9 @@ public class Person implements Parcelable {
 		
 		// TODO - fill in here
         dest.writeString(this.name);
-        dest.writeString(this.location);
         dest.writeString(this.phone);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
 	}
 	
 	/**

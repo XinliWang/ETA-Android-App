@@ -14,6 +14,10 @@ public class Trip implements Parcelable {
 	private String name;
 	private String destination;
 	private Calendar time;
+
+    //1 means trip is active, 0 means inactive
+    private int isActive = 1;
+
    // private ArrayList<Person> friends;
 
     public long getId() {
@@ -56,6 +60,15 @@ public class Trip implements Parcelable {
 //        this.friends = friends;
 //    }
 
+
+    public int isActive() {
+        return this.isActive;
+    }
+
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
+    }
+
     /**
 	 * Parcelable creator. Do not modify this function.
 	 */
@@ -85,6 +98,7 @@ public class Trip implements Parcelable {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(p.readLong());
         time = cal;
+        isActive = p.readInt();
        // friends = convertStringToList(p.readString());
 	}
 	
@@ -95,12 +109,13 @@ public class Trip implements Parcelable {
 	 * instantiate Trip class based on member variables.
 	 */
 //	public Trip(Long id,String name,String destination,Calendar time,ArrayList<Person> friends) {
-    public Trip(Long id,String name,String destination,Calendar time) {
+    public Trip(Long id,String name,String destination,Calendar time,int isActive) {
 		// TODO - fill in here, please note you must have more arguments here
         this.id = id;
         this.name = name;
         this.destination = destination;
         this.time = time;
+        this.isActive = isActive;
       //  this.friends = friends;
 	}
 
@@ -125,6 +140,7 @@ public class Trip implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.destination);
         dest.writeLong(this.time.getTimeInMillis());
+        dest.writeInt(this.isActive);
        // dest.writeString(convertListToString(this.friends));
 	}
 

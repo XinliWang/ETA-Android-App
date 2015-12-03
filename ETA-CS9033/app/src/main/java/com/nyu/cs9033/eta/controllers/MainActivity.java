@@ -227,7 +227,7 @@ public class MainActivity extends Activity{
             JSONArray people = jsonObject.getJSONArray("people");
             for(int i=0;i<people.length();i++){
                 builder.append("Name:"+people.getString(i)+"\nDistance Left:"+
-                        distance_left.getDouble(i)+"miles\nTime Left:"+time_left.getDouble(i)/60+"minutes");
+                        distance_left.getDouble(i)+"miles\nTime Left:"+time_left.getDouble(i)/60+"minutes\n");
             }
         } catch (JSONException e) {
             e.printStackTrace();
