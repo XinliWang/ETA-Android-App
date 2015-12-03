@@ -157,6 +157,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
            // trip.setFriends(trip.convertStringToList(cursor.getString(4)));
             tripList.add(trip);
         }
+        cursor.close();
         return tripList;
     }
 
@@ -171,6 +172,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             tripNameList.add(cursor.getString(0));
         }
+        cursor.close();
         return tripNameList;
     }
 
@@ -186,6 +188,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             tripNameList.add(cursor.getString(0));
         }
+        cursor.close();
         return tripNameList;
     }
 
@@ -203,6 +206,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             tripNameList.add(cursor.getString(0));
         }
+        cursor.close();
         return tripNameList;
     }
 
@@ -220,6 +224,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             tripNameList.add(cursor.getString(0));
         }
+        cursor.close();
         return tripNameList;
     }
 
@@ -257,6 +262,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             personsList.add(cursor.getString(0)+":"+cursor.getString(1));
         }
+        cursor.close();
         return personsList;
     }
 
@@ -266,12 +272,6 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_TRIP_IS_ACTIVE,0);
         db.update(TABLE_TRIP,cv,"trip_id = "+ tripId,null);
     }
-
-//    public int getTripStatus(){
-//
-//    }
-
-
 
 
 

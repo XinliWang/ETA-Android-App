@@ -335,6 +335,7 @@ private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         try {
             doUnbindService();
             stopService(new Intent(MainActivity.this, CurrentLocationUtil.class));
+            helper.close();
         } catch (Throwable t) {
             Log.e("MainActivity", "Failed to unbind from the service", t);
         }
